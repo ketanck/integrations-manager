@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Integrations module to integrate Linear, CklickUp and Jira in your app",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc -b"
   },
