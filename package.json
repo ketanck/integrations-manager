@@ -1,0 +1,22 @@
+{
+  "name": "integrations-manager",
+  "version": "1.0.0",
+  "description": "Integrations module to integrate Linear, CklickUp and Jira in your app",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "author": "Ketan Jangid",
+  "license": "ISC",
+  "dependencies": {
+    "@linear/sdk": "^33.0.0",
+    "axios": "^1.7.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ketanck/integrations-manager.git"
+  }
+}
