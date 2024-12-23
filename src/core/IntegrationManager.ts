@@ -114,6 +114,16 @@ export class IntegrationManager {
     }
 
 
+    // #####################   REFRESH TOKEN   ####################
+    /**
+     * Refresh Linear access token
+     * @param refreshToken expects refresh token to get new access token
+     * @returns new access_token, refresh_token expires_in, token_type and scope
+     */
+    async refreshJiraToken(refreshToken: string): Promise<any> {
+        return await this.jira?.refreshToken(refreshToken) ?? "";
+    }
+
     // #####################   CREATE NEW TASK   ####################
     /**
      * Create new task on Linear

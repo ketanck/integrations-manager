@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { JiraInterface } from "./interface/JiraInterface";
 
 // TODO: DEFINE STRUCTURE FOR ALL INPUTS AND OUTPUTS
@@ -46,7 +46,7 @@ export class JiraIntegration implements JiraInterface {
     /**
      * Get access token and other relevant data by passing in auth code
      * @param code authorization code returned by Jira
-     * @returns access_token, expires_in and scope
+     * @returns access_token, expires_in, token_type and scope (and refresh_token)
      */
     async getTokens(code: string): Promise<any> {
         const data = {
@@ -57,7 +57,7 @@ export class JiraIntegration implements JiraInterface {
             grant_type: "authorization_code"
         };
         const headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/json"
         };
         
         const res: axios.AxiosResponse = await axios.post(JiraIntegration.tokenUrl,
@@ -65,10 +65,31 @@ export class JiraIntegration implements JiraInterface {
             { headers }
         );
         
-        const { access_token, expires_in, scope } = res.data;
-        
-        // DEFINE A TYPE/INTERFACE AND RETURN THIS DATA
-        return { access_token, expires_in, scope };
+        return res.data;
+    }
+
+    /**
+     * Get new access token by passing in refresh token
+     * @param refreshToken refresh token provided by Jira
+     * @returns new access_token, refresh_token expires_in, token_type and scope
+     */
+    async refreshToken(refreshToken: string): Promise<any> {
+        const data = {
+            refresh_token: refreshToken,
+            client_id: this.clientId,
+            client_secret: this.clientSecret,
+            grant_type: "refresh_token"
+        };
+        const headers = {
+            "Content-Type": "application/json"
+        };
+
+        const res: axios.AxiosResponse = await axios.post(JiraIntegration.tokenUrl,
+            data,
+            { headers }
+        );
+
+        return res.data;
     }
     
 
@@ -83,12 +104,33 @@ export class JiraIntegration implements JiraInterface {
             "Content-Type": "application/json"
         };
         
-        const res: axios.AxiosResponse = await axios.get(
-            `${JiraIntegration.baseUrl}/me`,
-            { headers }
-        );
+        try {
+            const res: axios.AxiosResponse = await axios.get(
+                `${JiraIntegration.baseUrl}/me`,
+                { headers }
+            );
+    
+            return {
+                status: 200,
+                data: res.data
+            };
+        } catch (err: any) {
+            console.error(err);
 
-        return res.data;
+            if(err.response?.status === 401) {
+                console.error("Unauthorized");
+
+                return {
+                    status: 401,
+                    message: "Unauthorized"
+                };
+            } else {
+                return {
+                    status: 500,
+                    message: "Internal Server Error"
+                };
+            }
+        }
     }
 
 
@@ -101,8 +143,32 @@ export class JiraIntegration implements JiraInterface {
         const cloudId: string = await this.getCloudId(accessToken);
         console.log("cloud id: " + cloudId);
 
+        if(cloudId === "Unauthorized") {
+            return {
+                status: 401,
+                message: "Unauthorized"
+            };
+        } else if(cloudId === "Error") {
+            return {
+                status: 500,
+                message: "Internal Server Error"
+            };
+        }
+
         const projectKey: string = await this.getProjectKey(accessToken, cloudId);
         console.log("project key: " + projectKey);
+
+        if(projectKey === "Unauthorized") {
+            return {
+                status: 401,
+                message: "Unauthorized"
+            };
+        } else if(projectKey === "Error") {
+            return {
+                status: 500,
+                message: "Internal Server Error"
+            };
+        }
 
         const data = {
             'fields': {
@@ -116,35 +182,53 @@ export class JiraIntegration implements JiraInterface {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json"
         };
+        
+        try {
+            const res: axios.AxiosResponse = await axios.post(
+                `${JiraIntegration.apiUrl}/${cloudId}/rest/api/3/issue`,
+                {
+                    'fields': {
+                        'project': { 'key': projectKey },
+                        'summary': summary,
+                        "description": {
+                            "type": "doc",
+                            "version": 1,
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "text": description, 
+                                            "type": "text"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        'issuetype': { 'name': 'Task' }
+                    }
+                }, 
+                { headers }
+            );
+    
+            return res.data;
+        } catch (err: any) {
+            console.error(err);
 
-        const res: axios.AxiosResponse = await axios.post(
-            `${JiraIntegration.apiUrl}/${cloudId}/rest/api/3/issue`,
-            {
-                'fields': {
-                    'project': { 'key': projectKey },
-                    'summary': summary,
-                    "description": {
-                        "type": "doc",
-                        "version": 1,
-                        "content": [
-                            {
-                                "type": "paragraph",
-                                "content": [
-                                    {
-                                        "text": description, 
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    'issuetype': { 'name': 'Task' }
-                }
-            }, 
-            { headers }
-        );
+            if(err.response?.status === 401) {
+                console.error("Unauthorized");
 
-        return res.data;
+                return {
+                    status: 401,
+                    message: "Unauthorized"
+                };
+            } else {
+                return {
+                    status: 500,
+                    message: "Internal Server Error"
+                };
+            }
+        }
     }
     
     // ###################   HELPER METHODS   #####################
@@ -154,12 +238,24 @@ export class JiraIntegration implements JiraInterface {
             "Content-Type": "application/json"
         }
 
-        const res: axios.AxiosResponse = await axios.get(
-            JiraIntegration.cloudIdUrl,
-            { headers }
-        );
+        try {
+            const res: axios.AxiosResponse = await axios.get(
+                JiraIntegration.cloudIdUrl,
+                { headers }
+            );
+    
+            return res.data[0].id;
+        } catch (err: any) {
+            console.error(err);
 
-        return res.data[0].id;
+            if(err.response?.status === 401) {
+                console.error("Unauthorized");
+
+                return "Unauthorized";
+            }
+        }
+
+        return "Error";
     }
 
     private async getProjectKey(accessToken: string, cloudId: string): Promise<string> {
@@ -167,25 +263,23 @@ export class JiraIntegration implements JiraInterface {
             Authorization: `Bearer ${accessToken}`
         }
 
-        const res: axios.AxiosResponse = await axios.get(
-            `${JiraIntegration.apiUrl}/${cloudId}/rest/api/3/project`,
-            { headers }
-        );
+        try {
+            const res: axios.AxiosResponse = await axios.get(
+                `${JiraIntegration.apiUrl}/${cloudId}/rest/api/3/project`,
+                { headers }
+            );
+    
+            return res.data[0].key;
+        } catch (err: any) {
+            console.error(err);
 
-        return res.data[0].key;
-    }
+            if(err.response?.status === 401) {
+                console.error("Unauthorized");
 
-    private parseScopes(scopes: string): string {
-        const scopesArr: string[] = scopes.split(',');
-
-        let parsedScopes = "";
-        for(let i=0; i<scopesArr.length; i++) {
-            parsedScopes += scopesArr[i].replace(":", "%3A");
-            if(i!=scopesArr.length-1) {
-                parsedScopes += "%20";
+                return "Unauthorized";
             }
         }
 
-        return parsedScopes;
+        return "Error";
     }
 }

@@ -5,7 +5,7 @@ export interface JiraInterface extends IntegrationInterface {
 
     getTokens(code: string): Promise<any>;
 
-    fetchUserInfo(accessToken: string): Promise<any>;
+    fetchUserInfo(accessToken: string, refresh_token?: string): Promise<any>;
 
     createTask({ }: any): Promise<any>;
 }
