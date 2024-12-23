@@ -22,9 +22,15 @@ export declare class JiraIntegration implements JiraInterface {
     /**
      * Get access token and other relevant data by passing in auth code
      * @param code authorization code returned by Jira
-     * @returns access_token, expires_in and scope
+     * @returns access_token, expires_in, token_type and scope (and refresh_token)
      */
     getTokens(code: string): Promise<any>;
+    /**
+     * Get new access token by passing in refresh token
+     * @param refreshToken refresh token provided by Jira
+     * @returns new access_token, refresh_token expires_in, token_type and scope
+     */
+    refreshToken(refreshToken: string): Promise<any>;
     /**
      * Fetches user information from Jira
      * @param accessToken expects access tokn provided by Jira
@@ -43,5 +49,4 @@ export declare class JiraIntegration implements JiraInterface {
     }): Promise<any>;
     private getCloudId;
     private getProjectKey;
-    private parseScopes;
 }

@@ -125,6 +125,18 @@ class IntegrationManager {
             return yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.fetchUserInfo(accessToken));
         });
     }
+    // #####################   REFRESH TOKEN   ####################
+    /**
+     * Refresh Linear access token
+     * @param refreshToken expects refresh token to get new access token
+     * @returns new access_token, refresh_token expires_in, token_type and scope
+     */
+    refreshJiraToken(refreshToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            return (_b = yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.refreshToken(refreshToken))) !== null && _b !== void 0 ? _b : "";
+        });
+    }
     // #####################   CREATE NEW TASK   ####################
     /**
      * Create new task on Linear

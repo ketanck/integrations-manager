@@ -44,7 +44,7 @@ class JiraIntegration {
     /**
      * Get access token and other relevant data by passing in auth code
      * @param code authorization code returned by Jira
-     * @returns access_token, expires_in and scope
+     * @returns access_token, expires_in, token_type and scope (and refresh_token)
      */
     getTokens(code) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -56,12 +56,30 @@ class JiraIntegration {
                 grant_type: "authorization_code"
             };
             const headers = {
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/json"
             };
             const res = yield axios_1.default.post(_a.tokenUrl, data, { headers });
-            const { access_token, expires_in, scope } = res.data;
-            // DEFINE A TYPE/INTERFACE AND RETURN THIS DATA
-            return { access_token, expires_in, scope };
+            return res.data;
+        });
+    }
+    /**
+     * Get new access token by passing in refresh token
+     * @param refreshToken refresh token provided by Jira
+     * @returns new access_token, refresh_token expires_in, token_type and scope
+     */
+    refreshToken(refreshToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = {
+                refresh_token: refreshToken,
+                client_id: this.clientId,
+                client_secret: this.clientSecret,
+                grant_type: "refresh_token"
+            };
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            const res = yield axios_1.default.post(_a.tokenUrl, data, { headers });
+            return res.data;
         });
     }
     /**
@@ -71,12 +89,34 @@ class JiraIntegration {
      */
     fetchUserInfo(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _b;
             const headers = {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json"
             };
-            const res = yield axios_1.default.get(`${_a.baseUrl}/me`, { headers });
-            return res.data;
+            try {
+                const res = yield axios_1.default.get(`${_a.baseUrl}/me`, { headers });
+                return {
+                    status: 200,
+                    data: res.data
+                };
+            }
+            catch (err) {
+                console.error(err);
+                if (((_b = err.response) === null || _b === void 0 ? void 0 : _b.status) === 401) {
+                    console.error("Unauthorized");
+                    return {
+                        status: 401,
+                        message: "Unauthorized"
+                    };
+                }
+                else {
+                    return {
+                        status: 500,
+                        message: "Internal Server Error"
+                    };
+                }
+            }
         });
     }
     /**
@@ -86,10 +126,35 @@ class JiraIntegration {
      */
     createTask(_b) {
         return __awaiter(this, arguments, void 0, function* ({ accessToken, summary, description }) {
+            var _c;
             const cloudId = yield this.getCloudId(accessToken);
             console.log("cloud id: " + cloudId);
+            if (cloudId === "Unauthorized") {
+                return {
+                    status: 401,
+                    message: "Unauthorized"
+                };
+            }
+            else if (cloudId === "Error") {
+                return {
+                    status: 500,
+                    message: "Internal Server Error"
+                };
+            }
             const projectKey = yield this.getProjectKey(accessToken, cloudId);
             console.log("project key: " + projectKey);
+            if (projectKey === "Unauthorized") {
+                return {
+                    status: 401,
+                    message: "Unauthorized"
+                };
+            }
+            else if (projectKey === "Error") {
+                return {
+                    status: 500,
+                    message: "Internal Server Error"
+                };
+            }
             const data = {
                 'fields': {
                     'project': { 'key': projectKey },
@@ -102,61 +167,90 @@ class JiraIntegration {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json"
             };
-            const res = yield axios_1.default.post(`${_a.apiUrl}/${cloudId}/rest/api/3/issue`, {
-                'fields': {
-                    'project': { 'key': projectKey },
-                    'summary': summary,
-                    "description": {
-                        "type": "doc",
-                        "version": 1,
-                        "content": [
-                            {
-                                "type": "paragraph",
-                                "content": [
-                                    {
-                                        "text": description,
-                                        "type": "text"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    'issuetype': { 'name': 'Task' }
+            try {
+                const res = yield axios_1.default.post(`${_a.apiUrl}/${cloudId}/rest/api/3/issue`, {
+                    'fields': {
+                        'project': { 'key': projectKey },
+                        'summary': summary,
+                        "description": {
+                            "type": "doc",
+                            "version": 1,
+                            "content": [
+                                {
+                                    "type": "paragraph",
+                                    "content": [
+                                        {
+                                            "text": description,
+                                            "type": "text"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        'issuetype': { 'name': 'Task' }
+                    }
+                }, { headers });
+                return res.data;
+            }
+            catch (err) {
+                console.error(err);
+                if (((_c = err.response) === null || _c === void 0 ? void 0 : _c.status) === 401) {
+                    console.error("Unauthorized");
+                    return {
+                        status: 401,
+                        message: "Unauthorized"
+                    };
                 }
-            }, { headers });
-            return res.data;
+                else {
+                    return {
+                        status: 500,
+                        message: "Internal Server Error"
+                    };
+                }
+            }
         });
     }
     // ###################   HELPER METHODS   #####################
     getCloudId(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _b;
             const headers = {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json"
             };
-            const res = yield axios_1.default.get(_a.cloudIdUrl, { headers });
-            return res.data[0].id;
+            try {
+                const res = yield axios_1.default.get(_a.cloudIdUrl, { headers });
+                return res.data[0].id;
+            }
+            catch (err) {
+                console.error(err);
+                if (((_b = err.response) === null || _b === void 0 ? void 0 : _b.status) === 401) {
+                    console.error("Unauthorized");
+                    return "Unauthorized";
+                }
+            }
+            return "Error";
         });
     }
     getProjectKey(accessToken, cloudId) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _b;
             const headers = {
                 Authorization: `Bearer ${accessToken}`
             };
-            const res = yield axios_1.default.get(`${_a.apiUrl}/${cloudId}/rest/api/3/project`, { headers });
-            return res.data[0].key;
-        });
-    }
-    parseScopes(scopes) {
-        const scopesArr = scopes.split(',');
-        let parsedScopes = "";
-        for (let i = 0; i < scopesArr.length; i++) {
-            parsedScopes += scopesArr[i].replace(":", "%3A");
-            if (i != scopesArr.length - 1) {
-                parsedScopes += "%20";
+            try {
+                const res = yield axios_1.default.get(`${_a.apiUrl}/${cloudId}/rest/api/3/project`, { headers });
+                return res.data[0].key;
             }
-        }
-        return parsedScopes;
+            catch (err) {
+                console.error(err);
+                if (((_b = err.response) === null || _b === void 0 ? void 0 : _b.status) === 401) {
+                    console.error("Unauthorized");
+                    return "Unauthorized";
+                }
+            }
+            return "Error";
+        });
     }
 }
 exports.JiraIntegration = JiraIntegration;
