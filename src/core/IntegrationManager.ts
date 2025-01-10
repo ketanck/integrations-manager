@@ -59,6 +59,7 @@ export class IntegrationManager {
      * Signin user and get access token
      * @param code expects auth code, you get from url
      * @returns access_token, token_type, expires_in, scope 
+     * @returns linear response - access_token, token_type, expires_in, scope 
      */
     async getLinearAccessToken(code: string): Promise<any> {
         return await this.linear?.getTokens(code);
@@ -67,7 +68,7 @@ export class IntegrationManager {
     /**
      * Signin user and get access token
      * @param code axpects auth code, you get from url
-     * @returns access_token
+     * @returns clickup response - access_token
      */
     async getClickUpAccessToken(code: string): Promise<string> {
         return await this.clickup?.getTokens(code) ?? "";
@@ -76,7 +77,7 @@ export class IntegrationManager {
     /**
      * Signin user and get access token
      * @param code expects auth code, you get from url
-     * @returns access_token, expires_in and scope
+     * @returns jira response - access_token, expires_in and scope
      */
     async getJiraAccessToken(code: string): Promise<any> {
         return await this.jira?.getTokens(code);
@@ -116,7 +117,7 @@ export class IntegrationManager {
 
     // #####################   REFRESH TOKEN   ####################
     /**
-     * Refresh Linear access token
+     * Refresh Jira access token
      * @param refreshToken expects refresh token to get new access token
      * @returns new access_token, refresh_token expires_in, token_type and scope
      */
@@ -124,14 +125,36 @@ export class IntegrationManager {
         return await this.jira?.refreshToken(refreshToken) ?? "";
     }
 
+    
+    // #####################   REVOKE TOKEN   ##################### 
+    /**
+     * Revokes Linear access token
+     * @param accessToken expects accessToken as argument
+     * @returns linear response
+     */
+    async revokeLinearToken(accessToken: string): Promise<any> {
+        return await this.linear?.revokeAuthToken(accessToken);
+    }
+
+
+    /**
+     * Revokes Jira access token
+     * @param accessToken expects accessToken as argument
+     * @returns jira response
+     */
+    async revokeJiraToken(accessToken: string): Promise<any> {
+        return await this.jira?.revokeAuthToken(accessToken);
+    }
+
+
     // #####################   CREATE NEW TASK   ####################
     /**
      * Create new task on Linear
      * @param param0 expects accessToken, title and description to create task on linear
      * @returns linear response
      */
-    async createTaskOnLinear({ accessToken, title, description }: { accessToken: string, title: string, description: string }): Promise<any> {
-        return await this.linear?.createTask({ accessToken, title, description });
+    async createTaskOnLinear({ accessToken, title, description, teamId }: { accessToken: string, title: string, description: string, teamId: string }): Promise<any> {
+        return await this.linear?.createTask({ accessToken, title, description, teamId });
     }
 
     /**
@@ -139,17 +162,42 @@ export class IntegrationManager {
      * @param param0 expects accessToken, title and description to create task on clickup
      * @returns clickup response
      */
-    async createTaskOnClickUp({ accessToken, title, description }: { accessToken: string, title: string, description: string }): Promise<any> {
-        return await this.clickup?.createTask({ accessToken, title, description });
+    async createTaskOnClickUp({ accessToken, title, description, listId }: { accessToken: string, title: string, description: string, listId: string }): Promise<any> {
+        return await this.clickup?.createTask({ accessToken, title, description, listId });
     }
-
 
     /**
      * Create new task on Jira
      * @param param0 expects accessToken, title and description to create task on jira
      * @returns jira response
      */
-    async createTaskOnJira({ accessToken, summary, description }: { accessToken: string, summary: string, description: string }): Promise<any> {
-        return await this.jira?.createTask({ accessToken, summary, description });
+    async createTaskOnJira({ accessToken, summary, description, cloudId, projectKey }: { accessToken: string, summary: string, description: string, cloudId: string, projectKey: string }): Promise<any> {
+        return await this.jira?.createTask({ accessToken, summary, description, cloudId, projectKey });
+    }
+
+
+    // *********************   LINEAR   ********************
+    async getLinearTeams(accessToken:string) {
+        await this.linear?.fetchAllTeams(accessToken);
+    }
+
+
+    // ********************   JIRA   *******************
+    async getJiraCloudId(accessToken: string) {
+        await this.jira?.fetchCloudId(accessToken);
+    }
+
+    async getJiraProjects({ accessToken, cloudId } : { accessToken: string, cloudId: string }) {
+        await this.jira?.fetchAllProjects(accessToken, cloudId);
+    }
+
+
+    // *******************   CLICKUP   *******************
+    async getClickupTeams(accessToken: string) {
+        await this.clickup?.fetchAllTeams(accessToken);
+    }
+
+    async getClickupLists({ accessToken, teamId} : { accessToken: string, teamId: string }) {
+        await this.clickup?.fetchAllLists(accessToken, teamId);
     }
 }

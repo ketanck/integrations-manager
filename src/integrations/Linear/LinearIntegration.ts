@@ -13,6 +13,7 @@ export class LinearIntegration implements LinearInterface {
 
     private static readonly authUrl: string = "https://linear.app/oauth/authorize";
     private static readonly tokenUrl: string = "https://api.linear.app/oauth/token";
+    private static readonly tokenRevokeUrl: string = "https://api.linear.app/oauth/token";
     private static readonly endpoint: string = "https://api.linear.app/graphql";
 
     constructor({clientId, clientSecret, redirectUrl}: {clientId: string, clientSecret: string, redirectUrl: string}) {
@@ -59,15 +60,56 @@ export class LinearIntegration implements LinearInterface {
             "Content-Type": "application/x-www-form-urlencoded"
         };
 
-        const res: axios.AxiosResponse = await axios.post(LinearIntegration.tokenUrl,
-            data,
-            { headers }
-        );
+        try {
+            const res: axios.AxiosResponse = await axios.post(LinearIntegration.tokenUrl,
+                data,
+                { headers }
+            );
 
-        const { access_token, token_type, expires_in, scope } = res.data;
+            return {
+                success: true,
+                data: res.data
+            };
+        } catch (err) {
+            console.error("Error " + err);
+
+            return {
+                success: false,
+                error: err
+            }
+        }
+        // const { access_token, token_type, expires_in, scope } = res.data;
         
-        // DEFINE A TYPE/INTERFACE AND RETURN THIS DATA
-        return { access_token, token_type, expires_in, scope };
+        // // DEFINE A TYPE/INTERFACE AND RETURN THIS DATA
+        // return { access_token, token_type, expires_in, scope };
+    }
+
+
+    /**
+     * Revokes Linear access token
+     * @param accessToken needs access token provided by Linear
+     * @returns Linear response
+     */
+    async revokeAuthToken(accessToken: string): Promise<any> {
+        try {
+            const res = await axios.post(
+                LinearIntegration.tokenRevokeUrl,
+                null,
+                { headers: { Authorization: `Bearer ${accessToken}` } }
+            );
+    
+            return {
+                success: true,
+                data: res.data
+            };
+        } catch (err) {
+            console.error("Error " + err);
+
+            return {
+                success: false,
+                error: err
+            }
+        }
     }
 
 
@@ -76,26 +118,43 @@ export class LinearIntegration implements LinearInterface {
      * @param accessToken needs access token provided by Linear
      * @returns Linear User model
      */
-    async fetchUserInfo(accessToken: string): Promise<User> {
+    async fetchUserInfo(accessToken: string): Promise<any> {
         const client: LinearClient = new LinearClient({accessToken});
 
         const user: User = await client.viewer;
         
-        return user;
+        return {
+            success: true,
+            data: user
+        }
+        // return user;
     }
 
+    
+    /**
+     * Fetches all the teams, user is part of
+     * @param accessToken needs access token provided by Linear
+     * @returns list of linear teams
+     */
+    async fetchAllTeams(accessToken:string): Promise<any> {
+        const user: User = await this.fetchUserInfo(accessToken);
 
+        const teams: Team[] = (await user.teams()).nodes;
+
+        return {
+            success: true,
+            data: teams
+        }
+        // return teams;
+    }
+
+    
     /**
      * Creates new issue/task in Linear in default/first team
      * @param param0 accessToken, title, description needed to create new issue/task
      * @returns response of Linear
      */
-    async createTask({ accessToken, title, description }: { accessToken: string, title: string, description: string }): Promise<any> {
-        const user: User = await this.fetchUserInfo(accessToken);
-
-        const teams: Team[] = (await user.teams()).nodes;
-        const teamId: string = teams[0].id;
-
+    async createTask({ accessToken, title, description, teamId }: { accessToken: string, title: string, description: string, teamId: string }): Promise<any> {
         const query: string = `
                   mutation {
                     issueCreate(input: {
@@ -118,25 +177,23 @@ export class LinearIntegration implements LinearInterface {
             "Content-Type": "application/json",
         };
 
-        const res: axios.AxiosResponse = await axios.post(LinearIntegration.endpoint,
-            { query },
-            { headers }
-        );
+        try {
+            const res: axios.AxiosResponse = await axios.post(LinearIntegration.endpoint,
+                { query },
+                { headers }
+            );
 
-        return res.data;
+            return {
+                success: true,
+                data: res.data
+            };
+        } catch (err) {
+            console.error("Error " + err);
+
+            return {
+                success: false,
+                error: err
+            }
+        }
     }
-
-
-    // getTasks(): Promise<void> {
-    //     throw new Error("Method not implemented.");
-    // }
-
-    // updateTask(): Promise<void> {
-    //     throw new Error("Method not implemented.");
-    // }
-
-    // deleteTask(): Promise<void> {
-    //     throw new Error("Method not implemented.");
-    // }
-    
 }
