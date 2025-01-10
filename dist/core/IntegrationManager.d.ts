@@ -35,18 +35,19 @@ export declare class IntegrationManager {
      * Signin user and get access token
      * @param code expects auth code, you get from url
      * @returns access_token, token_type, expires_in, scope
+     * @returns linear response - access_token, token_type, expires_in, scope
      */
     getLinearAccessToken(code: string): Promise<any>;
     /**
      * Signin user and get access token
      * @param code axpects auth code, you get from url
-     * @returns access_token
+     * @returns clickup response - access_token
      */
     getClickUpAccessToken(code: string): Promise<string>;
     /**
      * Signin user and get access token
      * @param code expects auth code, you get from url
-     * @returns access_token, expires_in and scope
+     * @returns jira response - access_token, expires_in and scope
      */
     getJiraAccessToken(code: string): Promise<any>;
     /**
@@ -68,39 +69,66 @@ export declare class IntegrationManager {
      */
     jiraUser(accessToken: string): Promise<any>;
     /**
-     * Refresh Linear access token
+     * Refresh Jira access token
      * @param refreshToken expects refresh token to get new access token
      * @returns new access_token, refresh_token expires_in, token_type and scope
      */
     refreshJiraToken(refreshToken: string): Promise<any>;
     /**
+     * Revokes Linear access token
+     * @param accessToken expects accessToken as argument
+     * @returns linear response
+     */
+    revokeLinearToken(accessToken: string): Promise<any>;
+    /**
+     * Revokes Jira access token
+     * @param accessToken expects accessToken as argument
+     * @returns jira response
+     */
+    revokeJiraToken(accessToken: string): Promise<any>;
+    /**
      * Create new task on Linear
      * @param param0 expects accessToken, title and description to create task on linear
      * @returns linear response
      */
-    createTaskOnLinear({ accessToken, title, description }: {
+    createTaskOnLinear({ accessToken, title, description, teamId }: {
         accessToken: string;
         title: string;
         description: string;
+        teamId: string;
     }): Promise<any>;
     /**
      * Create new task on ClickUp
      * @param param0 expects accessToken, title and description to create task on clickup
      * @returns clickup response
      */
-    createTaskOnClickUp({ accessToken, title, description }: {
+    createTaskOnClickUp({ accessToken, title, description, listId }: {
         accessToken: string;
         title: string;
         description: string;
+        listId: string;
     }): Promise<any>;
     /**
      * Create new task on Jira
      * @param param0 expects accessToken, title and description to create task on jira
      * @returns jira response
      */
-    createTaskOnJira({ accessToken, summary, description }: {
+    createTaskOnJira({ accessToken, summary, description, cloudId, projectKey }: {
         accessToken: string;
         summary: string;
         description: string;
+        cloudId: string;
+        projectKey: string;
     }): Promise<any>;
+    getLinearTeams(accessToken: string): Promise<void>;
+    getJiraCloudId(accessToken: string): Promise<void>;
+    getJiraProjects({ accessToken, cloudId }: {
+        accessToken: string;
+        cloudId: string;
+    }): Promise<void>;
+    getClickupTeams(accessToken: string): Promise<void>;
+    getClickupLists({ accessToken, teamId }: {
+        accessToken: string;
+        teamId: string;
+    }): Promise<void>;
 }

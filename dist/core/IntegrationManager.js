@@ -62,6 +62,7 @@ class IntegrationManager {
      * Signin user and get access token
      * @param code expects auth code, you get from url
      * @returns access_token, token_type, expires_in, scope
+     * @returns linear response - access_token, token_type, expires_in, scope
      */
     getLinearAccessToken(code) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -72,7 +73,7 @@ class IntegrationManager {
     /**
      * Signin user and get access token
      * @param code axpects auth code, you get from url
-     * @returns access_token
+     * @returns clickup response - access_token
      */
     getClickUpAccessToken(code) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -83,7 +84,7 @@ class IntegrationManager {
     /**
      * Signin user and get access token
      * @param code expects auth code, you get from url
-     * @returns access_token, expires_in and scope
+     * @returns jira response - access_token, expires_in and scope
      */
     getJiraAccessToken(code) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -127,7 +128,7 @@ class IntegrationManager {
     }
     // #####################   REFRESH TOKEN   ####################
     /**
-     * Refresh Linear access token
+     * Refresh Jira access token
      * @param refreshToken expects refresh token to get new access token
      * @returns new access_token, refresh_token expires_in, token_type and scope
      */
@@ -137,6 +138,29 @@ class IntegrationManager {
             return (_b = yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.refreshToken(refreshToken))) !== null && _b !== void 0 ? _b : "";
         });
     }
+    // #####################   REVOKE TOKEN   ##################### 
+    /**
+     * Revokes Linear access token
+     * @param accessToken expects accessToken as argument
+     * @returns linear response
+     */
+    revokeLinearToken(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            return yield ((_a = this.linear) === null || _a === void 0 ? void 0 : _a.revokeAuthToken(accessToken));
+        });
+    }
+    /**
+     * Revokes Jira access token
+     * @param accessToken expects accessToken as argument
+     * @returns jira response
+     */
+    revokeJiraToken(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            return yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.revokeAuthToken(accessToken));
+        });
+    }
     // #####################   CREATE NEW TASK   ####################
     /**
      * Create new task on Linear
@@ -144,9 +168,9 @@ class IntegrationManager {
      * @returns linear response
      */
     createTaskOnLinear(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description }) {
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description, teamId }) {
             var _b;
-            return yield ((_b = this.linear) === null || _b === void 0 ? void 0 : _b.createTask({ accessToken, title, description }));
+            return yield ((_b = this.linear) === null || _b === void 0 ? void 0 : _b.createTask({ accessToken, title, description, teamId }));
         });
     }
     /**
@@ -155,9 +179,9 @@ class IntegrationManager {
      * @returns clickup response
      */
     createTaskOnClickUp(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description }) {
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description, listId }) {
             var _b;
-            return yield ((_b = this.clickup) === null || _b === void 0 ? void 0 : _b.createTask({ accessToken, title, description }));
+            return yield ((_b = this.clickup) === null || _b === void 0 ? void 0 : _b.createTask({ accessToken, title, description, listId }));
         });
     }
     /**
@@ -166,9 +190,42 @@ class IntegrationManager {
      * @returns jira response
      */
     createTaskOnJira(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ accessToken, summary, description }) {
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, summary, description, cloudId, projectKey }) {
             var _b;
-            return yield ((_b = this.jira) === null || _b === void 0 ? void 0 : _b.createTask({ accessToken, summary, description }));
+            return yield ((_b = this.jira) === null || _b === void 0 ? void 0 : _b.createTask({ accessToken, summary, description, cloudId, projectKey }));
+        });
+    }
+    // *********************   LINEAR   ********************
+    getLinearTeams(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            yield ((_a = this.linear) === null || _a === void 0 ? void 0 : _a.fetchAllTeams(accessToken));
+        });
+    }
+    // ********************   JIRA   *******************
+    getJiraCloudId(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.fetchCloudId(accessToken));
+        });
+    }
+    getJiraProjects(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, cloudId }) {
+            var _b;
+            yield ((_b = this.jira) === null || _b === void 0 ? void 0 : _b.fetchAllProjects(accessToken, cloudId));
+        });
+    }
+    // *******************   CLICKUP   *******************
+    getClickupTeams(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            yield ((_a = this.clickup) === null || _a === void 0 ? void 0 : _a.fetchAllTeams(accessToken));
+        });
+    }
+    getClickupLists(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, teamId }) {
+            var _b;
+            yield ((_b = this.clickup) === null || _b === void 0 ? void 0 : _b.fetchAllLists(accessToken, teamId));
         });
     }
 }

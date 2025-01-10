@@ -57,10 +57,46 @@ class LinearIntegration {
             const headers = {
                 "Content-Type": "application/x-www-form-urlencoded"
             };
-            const res = yield axios_1.default.post(LinearIntegration.tokenUrl, data, { headers });
-            const { access_token, token_type, expires_in, scope } = res.data;
-            // DEFINE A TYPE/INTERFACE AND RETURN THIS DATA
-            return { access_token, token_type, expires_in, scope };
+            try {
+                const res = yield axios_1.default.post(LinearIntegration.tokenUrl, data, { headers });
+                return {
+                    success: true,
+                    data: res.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
+            // const { access_token, token_type, expires_in, scope } = res.data;
+            // // DEFINE A TYPE/INTERFACE AND RETURN THIS DATA
+            // return { access_token, token_type, expires_in, scope };
+        });
+    }
+    /**
+     * Revokes Linear access token
+     * @param accessToken needs access token provided by Linear
+     * @returns Linear response
+     */
+    revokeAuthToken(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const res = yield axios_1.default.post(LinearIntegration.tokenRevokeUrl, null, { headers: { Authorization: `Bearer ${accessToken}` } });
+                return {
+                    success: true,
+                    data: res.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
         });
     }
     /**
@@ -72,7 +108,27 @@ class LinearIntegration {
         return __awaiter(this, void 0, void 0, function* () {
             const client = new sdk_1.LinearClient({ accessToken });
             const user = yield client.viewer;
-            return user;
+            return {
+                success: true,
+                data: user
+            };
+            // return user;
+        });
+    }
+    /**
+     * Fetches all the teams, user is part of
+     * @param accessToken needs access token provided by Linear
+     * @returns list of linear teams
+     */
+    fetchAllTeams(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.fetchUserInfo(accessToken);
+            const teams = (yield user.teams()).nodes;
+            return {
+                success: true,
+                data: teams
+            };
+            // return teams;
         });
     }
     /**
@@ -81,10 +137,7 @@ class LinearIntegration {
      * @returns response of Linear
      */
     createTask(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description }) {
-            const user = yield this.fetchUserInfo(accessToken);
-            const teams = (yield user.teams()).nodes;
-            const teamId = teams[0].id;
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description, teamId }) {
             const query = `
                   mutation {
                     issueCreate(input: {
@@ -105,12 +158,25 @@ class LinearIntegration {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
             };
-            const res = yield axios_1.default.post(LinearIntegration.endpoint, { query }, { headers });
-            return res.data;
+            try {
+                const res = yield axios_1.default.post(LinearIntegration.endpoint, { query }, { headers });
+                return {
+                    success: true,
+                    data: res.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
         });
     }
 }
 exports.LinearIntegration = LinearIntegration;
 LinearIntegration.authUrl = "https://linear.app/oauth/authorize";
 LinearIntegration.tokenUrl = "https://api.linear.app/oauth/token";
+LinearIntegration.tokenRevokeUrl = "https://api.linear.app/oauth/token";
 LinearIntegration.endpoint = "https://api.linear.app/graphql";

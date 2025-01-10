@@ -26,6 +26,12 @@ export declare class JiraIntegration implements JiraInterface {
      */
     getTokens(code: string): Promise<any>;
     /**
+     * Revoke Jira access token
+     * @param accessToken Jira access token
+     * @returns Jira response
+     */
+    revokeAuthToken(accessToken: string): Promise<any>;
+    /**
      * Get new access token by passing in refresh token
      * @param refreshToken refresh token provided by Jira
      * @returns new access_token, refresh_token expires_in, token_type and scope
@@ -37,16 +43,18 @@ export declare class JiraIntegration implements JiraInterface {
      * @returns Jira response
      */
     fetchUserInfo(accessToken: string): Promise<any>;
+    fetchAllProjects(accessToken: string, cloudId: string): Promise<any>;
+    fetchCloudId(accessToken: string): Promise<any>;
     /**
      * Creates new task in the default project
      * @param param0 expects accessToken, summary and description of the task to be created
      * @returns Jira response
      */
-    createTask({ accessToken, summary, description }: {
+    createTask({ accessToken, summary, description, cloudId, projectKey }: {
         accessToken: string;
         summary: string;
         description: string;
+        cloudId: string;
+        projectKey: string;
     }): Promise<any>;
-    private getCloudId;
-    private getProjectKey;
 }

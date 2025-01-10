@@ -48,8 +48,21 @@ class ClickUpIntegration {
                 client_secret: this.clientSecret,
                 code: code
             };
-            const res = yield axios_1.default.post(ClickUpIntegration.tokenUrl, data);
-            return res.data.access_token;
+            try {
+                const res = yield axios_1.default.post(ClickUpIntegration.tokenUrl, data);
+                return {
+                    success: true,
+                    data: res.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
+            // return res.data.access_token;
         });
     }
     /**
@@ -62,8 +75,80 @@ class ClickUpIntegration {
             const headers = {
                 Authorization: `Bearer ${accessToken}`
             };
-            const res = yield axios_1.default.get(ClickUpIntegration.userInfoUrl, { headers });
-            return res.data.user;
+            try {
+                const res = yield axios_1.default.get(ClickUpIntegration.userInfoUrl, { headers });
+                return {
+                    success: true,
+                    data: res.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
+            // return res.data.user;
+        });
+    }
+    /**
+     * Fetches all the teams associated with the user
+     * @param accessToken expects Clickup access token
+     * @returns clickup response
+     */
+    fetchAllTeams(accessToken) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const headers = {
+                Authorization: `Bearer ${accessToken}`,
+            };
+            try {
+                const teamsRes = yield axios_1.default.get(`${ClickUpIntegration.apiUrl}/team`, {
+                    headers
+                });
+                return {
+                    success: true,
+                    data: teamsRes.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
+            // return teamsRes.data;
+        });
+    }
+    /**
+     * Fetches all the lists associated with the user in a team
+     * @param accessToken expects Clickup access token
+     * @param teamId expects user teamId
+     * @returns clickup response
+     */
+    fetchAllLists(accessToken, teamId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const headers = {
+                Authorization: `Bearer ${accessToken}`,
+            };
+            try {
+                const listRes = yield axios_1.default.get(`${ClickUpIntegration.apiUrl}/team/${teamId}/list`, {
+                    headers
+                });
+                return {
+                    success: true,
+                    data: listRes.data
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
+            // return listRes.data;
         });
     }
     /**
@@ -72,11 +157,7 @@ class ClickUpIntegration {
      * @returns Clickup response
      */
     createTask(_a) {
-        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description }) {
-            const listId = yield this.getListId(accessToken);
-            if (listId === "Error") {
-                return "Error";
-            }
+        return __awaiter(this, arguments, void 0, function* ({ accessToken, title, description, listId }) {
             // TODO: TAKE OTHER PROPERTIES ALSO, LIKE PRIORITY, ASSIGNEE ETC
             const taskPayload = {
                 name: title,
@@ -86,36 +167,21 @@ class ClickUpIntegration {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json"
             };
-            const res = yield axios_1.default.post(`${ClickUpIntegration.apiUrl}/list/${listId}/task`, taskPayload, { headers });
-            return res.data;
-        });
-    }
-    // ##################   HELPER METHODS   ####################
-    getListId(accessToken) {
-        return __awaiter(this, void 0, void 0, function* () {
             try {
-                const headers = {
-                    Authorization: `Bearer ${accessToken}`,
+                const res = yield axios_1.default.post(`${ClickUpIntegration.apiUrl}/list/${listId}/task`, taskPayload, { headers });
+                return {
+                    success: true,
+                    data: res.data
                 };
-                const teamsRes = yield axios_1.default.get(`${ClickUpIntegration.apiUrl}/team`, {
-                    headers
-                });
-                if (!teamsRes.data || !teamsRes.data.teams || teamsRes.data.teams.length == 0) {
-                    return "No teams found for this access token";
-                }
-                const teamId = teamsRes.data.teams[0].id;
-                const listRes = yield axios_1.default.get(`${ClickUpIntegration.apiUrl}/team/${teamId}/list`, {
-                    headers
-                });
-                if (!listRes.data || !listRes.data.lists || listRes.data.lists.length === 0) {
-                    return 'No lists found for this team';
-                }
-                return listRes.data.lists[0].id;
             }
             catch (err) {
-                console.error(err);
-                return "Error";
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
             }
+            // return res.data;
         });
     }
 }
