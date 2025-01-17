@@ -106,12 +106,21 @@ class LinearIntegration {
      */
     fetchUserInfo(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const client = new sdk_1.LinearClient({ accessToken });
-            const user = yield client.viewer;
-            return {
-                success: true,
-                data: user
-            };
+            try {
+                const client = new sdk_1.LinearClient({ accessToken });
+                const user = yield client.viewer;
+                return {
+                    success: true,
+                    data: user
+                };
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
             // return user;
         });
     }
@@ -122,13 +131,22 @@ class LinearIntegration {
      */
     fetchAllTeams(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.fetchUserInfo(accessToken);
-            const teams = (yield user.teams()).nodes;
-            return {
-                success: true,
-                data: teams
-            };
-            // return teams;
+            try {
+                const user = yield this.fetchUserInfo(accessToken);
+                const teams = (yield user.teams()).nodes;
+                return {
+                    success: true,
+                    data: teams
+                };
+                // return teams;
+            }
+            catch (err) {
+                console.error("Error " + err);
+                return {
+                    success: false,
+                    error: err
+                };
+            }
         });
     }
     /**

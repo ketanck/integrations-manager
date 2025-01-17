@@ -119,13 +119,22 @@ export class LinearIntegration implements LinearInterface {
      * @returns Linear User model
      */
     async fetchUserInfo(accessToken: string): Promise<any> {
-        const client: LinearClient = new LinearClient({accessToken});
+        try {
+            const client: LinearClient = new LinearClient({accessToken});
+    
+            const user: User = await client.viewer;
+            
+            return {
+                success: true,
+                data: user
+            }
+        } catch (err) {
+            console.error("Error " + err);
 
-        const user: User = await client.viewer;
-        
-        return {
-            success: true,
-            data: user
+            return {
+                success: false,
+                error: err
+            }
         }
         // return user;
     }
@@ -137,15 +146,24 @@ export class LinearIntegration implements LinearInterface {
      * @returns list of linear teams
      */
     async fetchAllTeams(accessToken:string): Promise<any> {
-        const user: User = await this.fetchUserInfo(accessToken);
+        try {
+            const user: User = await this.fetchUserInfo(accessToken);
+    
+            const teams: Team[] = (await user.teams()).nodes;
+    
+            return {
+                success: true,
+                data: teams
+            }
+            // return teams;
+        } catch (err) {
+            console.error("Error " + err);
 
-        const teams: Team[] = (await user.teams()).nodes;
-
-        return {
-            success: true,
-            data: teams
+            return {
+                success: false,
+                error: err
+            }
         }
-        // return teams;
     }
 
     

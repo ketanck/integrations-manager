@@ -1,4 +1,3 @@
-import { User } from "@linear/sdk";
 import { ClickUpIntegration } from "../integrations/ClickUp/ClickUpIntegration";
 import { JiraIntegration } from "../integrations/Jira/JiraIntegration";
 import { LinearIntegration } from "../integrations/Linear/LinearIntegration";
@@ -43,7 +42,7 @@ export declare class IntegrationManager {
      * @param code axpects auth code, you get from url
      * @returns clickup response - access_token
      */
-    getClickUpAccessToken(code: string): Promise<string>;
+    getClickUpAccessToken(code: string): Promise<any>;
     /**
      * Signin user and get access token
      * @param code expects auth code, you get from url
@@ -55,7 +54,7 @@ export declare class IntegrationManager {
      * @param accessToken expects accessToken as argument
      * @returns User model returned by linear
      */
-    linearUser(accessToken: string): Promise<User>;
+    linearUser(accessToken: string): Promise<any>;
     /**
      * Fetch user info from ClickUp
      * @param accessToken expects accessToken as argument
@@ -120,15 +119,15 @@ export declare class IntegrationManager {
         cloudId: string;
         projectKey: string;
     }): Promise<any>;
-    getLinearTeams(accessToken: string): Promise<void>;
-    getJiraCloudId(accessToken: string): Promise<void>;
+    getLinearTeams(accessToken: string): Promise<any>;
+    getJiraCloudId(accessToken: string): Promise<any>;
     getJiraProjects({ accessToken, cloudId }: {
         accessToken: string;
         cloudId: string;
-    }): Promise<void>;
-    getClickupTeams(accessToken: string): Promise<void>;
+    }): Promise<any>;
+    getClickupTeams(accessToken: string): Promise<any>;
     getClickupLists({ accessToken, teamId }: {
         accessToken: string;
         teamId: string;
-    }): Promise<void>;
+    }): Promise<any>;
 }

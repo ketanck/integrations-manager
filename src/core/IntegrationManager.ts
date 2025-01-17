@@ -49,7 +49,7 @@ export class IntegrationManager {
      * @param scopes expects space seperated jira scopes
      * @returns auth url user should to redirected to
      */
-    getJiraAuthorizationUrl(scopes: string){
+    getJiraAuthorizationUrl(scopes: string): string {
         return this.jira?.authorize(scopes) ?? "Jira Integration not added";
     }
 
@@ -70,7 +70,7 @@ export class IntegrationManager {
      * @param code axpects auth code, you get from url
      * @returns clickup response - access_token
      */
-    async getClickUpAccessToken(code: string): Promise<string> {
+    async getClickUpAccessToken(code: string): Promise<any> {
         return await this.clickup?.getTokens(code) ?? "";
     }
 
@@ -90,7 +90,7 @@ export class IntegrationManager {
      * @param accessToken expects accessToken as argument
      * @returns User model returned by linear
      */
-    async linearUser(accessToken: string): Promise<User>{
+    async linearUser(accessToken: string): Promise<any>{
         return await this.linear?.fetchUserInfo(accessToken)!;
     }
 
@@ -177,27 +177,27 @@ export class IntegrationManager {
 
 
     // *********************   LINEAR   ********************
-    async getLinearTeams(accessToken:string) {
+    async getLinearTeams(accessToken:string): Promise<any> {
         await this.linear?.fetchAllTeams(accessToken);
     }
 
 
     // ********************   JIRA   *******************
-    async getJiraCloudId(accessToken: string) {
+    async getJiraCloudId(accessToken: string): Promise<any>  {
         await this.jira?.fetchCloudId(accessToken);
     }
 
-    async getJiraProjects({ accessToken, cloudId } : { accessToken: string, cloudId: string }) {
+    async getJiraProjects({ accessToken, cloudId } : { accessToken: string, cloudId: string }): Promise<any>  {
         await this.jira?.fetchAllProjects(accessToken, cloudId);
     }
 
 
     // *******************   CLICKUP   *******************
-    async getClickupTeams(accessToken: string) {
+    async getClickupTeams(accessToken: string): Promise<any>  {
         await this.clickup?.fetchAllTeams(accessToken);
     }
 
-    async getClickupLists({ accessToken, teamId} : { accessToken: string, teamId: string }) {
+    async getClickupLists({ accessToken, teamId} : { accessToken: string, teamId: string }): Promise<any>  {
         await this.clickup?.fetchAllLists(accessToken, teamId);
     }
 }
