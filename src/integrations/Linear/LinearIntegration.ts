@@ -147,7 +147,9 @@ export class LinearIntegration implements LinearInterface {
      */
     async fetchAllTeams(accessToken:string): Promise<any> {
         try {
-            const user: User = await this.fetchUserInfo(accessToken);
+            const client: LinearClient = new LinearClient({accessToken});
+    
+            const user: User = await client.viewer;
     
             const teams: Team[] = (await user.teams()).nodes;
     

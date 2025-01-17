@@ -132,7 +132,8 @@ class LinearIntegration {
     fetchAllTeams(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield this.fetchUserInfo(accessToken);
+                const client = new sdk_1.LinearClient({ accessToken });
+                const user = yield client.viewer;
                 const teams = (yield user.teams()).nodes;
                 return {
                     success: true,
