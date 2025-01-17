@@ -149,11 +149,15 @@ export class LinearIntegration implements LinearInterface {
         try {
             const client: LinearClient = new LinearClient({accessToken});
     
+            console.log("first");
             const user: User = await client.viewer;
     
+            console.log("got user");
             const t = await user.teams();
+            console.log("teams");
             const teams: Team[] = t.nodes;
     
+            console.log("all teams");
             return {
                 success: true,
                 data: teams

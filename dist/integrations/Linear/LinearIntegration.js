@@ -133,9 +133,13 @@ class LinearIntegration {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const client = new sdk_1.LinearClient({ accessToken });
+                console.log("first");
                 const user = yield client.viewer;
+                console.log("got user");
                 const t = yield user.teams();
+                console.log("teams");
                 const teams = t.nodes;
+                console.log("all teams");
                 return {
                     success: true,
                     data: teams
