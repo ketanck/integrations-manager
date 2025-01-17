@@ -174,6 +174,7 @@ class JiraIntegration {
     }
     fetchAllProjects(accessToken, cloudId) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _b;
             const headers = {
                 Authorization: `Bearer ${accessToken}`
             };
@@ -185,16 +186,28 @@ class JiraIntegration {
                 };
             }
             catch (err) {
-                console.error("Error " + err);
-                return {
-                    success: false,
-                    error: err
-                };
+                console.error(err);
+                if (((_b = err.response) === null || _b === void 0 ? void 0 : _b.status) === 401) {
+                    console.error("Unauthorized");
+                    return {
+                        success: false,
+                        message: "Unauthorized",
+                        error: err
+                    };
+                }
+                else {
+                    return {
+                        success: false,
+                        message: "Internal Server Error",
+                        error: err
+                    };
+                }
             }
         });
     }
     fetchCloudId(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _b;
             const headers = {
                 Authorization: `Bearer ${accessToken}`
             };
@@ -206,11 +219,22 @@ class JiraIntegration {
                 };
             }
             catch (err) {
-                console.error("Error " + err);
-                return {
-                    success: false,
-                    error: err
-                };
+                console.error(err);
+                if (((_b = err.response) === null || _b === void 0 ? void 0 : _b.status) === 401) {
+                    console.error("Unauthorized");
+                    return {
+                        success: false,
+                        message: "Unauthorized",
+                        error: err
+                    };
+                }
+                else {
+                    return {
+                        success: false,
+                        message: "Internal Server Error",
+                        error: err
+                    };
+                }
             }
         });
     }

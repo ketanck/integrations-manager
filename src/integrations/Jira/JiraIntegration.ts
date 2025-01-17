@@ -209,12 +209,23 @@ export class JiraIntegration implements JiraInterface {
                 success: true,
                 data: res.data
             };
-        } catch (err) {
-            console.error("Error " + err);
+        } catch (err: any) {
+            console.error(err);
 
-            return {
-                success: false,
-                error: err
+            if(err.response?.status === 401) {
+                console.error("Unauthorized");
+                
+                return {
+                    success: false,
+                    message: "Unauthorized",
+                    error: err
+                }
+            } else {
+                return {
+                    success: false,
+                    message: "Internal Server Error",
+                    error: err
+                };
             }
         }
     }
@@ -235,12 +246,23 @@ export class JiraIntegration implements JiraInterface {
                 success: true,
                 data: res.data
             };
-        } catch (err) {
-            console.error("Error " + err);
+        } catch (err: any) {
+            console.error(err);
 
-            return {
-                success: false,
-                error: err
+            if(err.response?.status === 401) {
+                console.error("Unauthorized");
+                
+                return {
+                    success: false,
+                    message: "Unauthorized",
+                    error: err
+                }
+            } else {
+                return {
+                    success: false,
+                    message: "Internal Server Error",
+                    error: err
+                };
             }
         }
     }
