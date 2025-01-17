@@ -178,26 +178,26 @@ export class IntegrationManager {
 
     // *********************   LINEAR   ********************
     async getLinearTeams(accessToken:string): Promise<any> {
-        await this.linear?.fetchAllTeams(accessToken);
+        return await this.linear?.fetchAllTeams(accessToken);
     }
 
 
     // ********************   JIRA   *******************
     async getJiraCloudId(accessToken: string): Promise<any>  {
-        await this.jira?.fetchCloudId(accessToken);
+        return await this.jira?.fetchCloudId(accessToken);
     }
 
     async getJiraProjects({ accessToken, cloudId } : { accessToken: string, cloudId: string }): Promise<any>  {
-        await this.jira?.fetchAllProjects(accessToken, cloudId);
+        return await this.jira?.fetchAllProjects(accessToken, cloudId);
     }
 
 
     // *******************   CLICKUP   *******************
     async getClickupTeams(accessToken: string): Promise<any>  {
-        await this.clickup?.fetchAllTeams(accessToken);
+        return await this.clickup?.fetchAllTeams(accessToken);
     }
 
     async getClickupLists({ accessToken, teamId} : { accessToken: string, teamId: string }): Promise<any>  {
-        await this.clickup?.fetchAllLists(accessToken, teamId);
+        return await this.clickup?.fetchAllLists(accessToken, teamId);
     }
 }

@@ -199,33 +199,33 @@ class IntegrationManager {
     getLinearTeams(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            yield ((_a = this.linear) === null || _a === void 0 ? void 0 : _a.fetchAllTeams(accessToken));
+            return yield ((_a = this.linear) === null || _a === void 0 ? void 0 : _a.fetchAllTeams(accessToken));
         });
     }
     // ********************   JIRA   *******************
     getJiraCloudId(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.fetchCloudId(accessToken));
+            return yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.fetchCloudId(accessToken));
         });
     }
     getJiraProjects(_a) {
         return __awaiter(this, arguments, void 0, function* ({ accessToken, cloudId }) {
             var _b;
-            yield ((_b = this.jira) === null || _b === void 0 ? void 0 : _b.fetchAllProjects(accessToken, cloudId));
+            return yield ((_b = this.jira) === null || _b === void 0 ? void 0 : _b.fetchAllProjects(accessToken, cloudId));
         });
     }
     // *******************   CLICKUP   *******************
     getClickupTeams(accessToken) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            yield ((_a = this.clickup) === null || _a === void 0 ? void 0 : _a.fetchAllTeams(accessToken));
+            return yield ((_a = this.clickup) === null || _a === void 0 ? void 0 : _a.fetchAllTeams(accessToken));
         });
     }
     getClickupLists(_a) {
         return __awaiter(this, arguments, void 0, function* ({ accessToken, teamId }) {
             var _b;
-            yield ((_b = this.clickup) === null || _b === void 0 ? void 0 : _b.fetchAllLists(accessToken, teamId));
+            return yield ((_b = this.clickup) === null || _b === void 0 ? void 0 : _b.fetchAllLists(accessToken, teamId));
         });
     }
 }
