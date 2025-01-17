@@ -151,7 +151,8 @@ export class LinearIntegration implements LinearInterface {
     
             const user: User = await client.viewer;
     
-            const teams: Team[] = (await user.teams()).nodes;
+            const t = await user.teams();
+            const teams: Team[] = t.nodes;
     
             return {
                 success: true,

@@ -134,7 +134,8 @@ class LinearIntegration {
             try {
                 const client = new sdk_1.LinearClient({ accessToken });
                 const user = yield client.viewer;
-                const teams = (yield user.teams()).nodes;
+                const t = yield user.teams();
+                const teams = t.nodes;
                 return {
                     success: true,
                     data: teams
