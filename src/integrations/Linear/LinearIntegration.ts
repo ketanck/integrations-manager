@@ -157,7 +157,7 @@ export class LinearIntegration implements LinearInterface {
             console.log("teams");
             const teams: Team[] = t.nodes;
     
-            console.log("all teams");
+            console.log("all teams " + teams);
             return {
                 success: true,
                 data: teams

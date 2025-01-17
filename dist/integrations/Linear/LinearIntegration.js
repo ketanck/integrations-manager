@@ -139,7 +139,7 @@ class LinearIntegration {
                 const t = yield user.teams();
                 console.log("teams");
                 const teams = t.nodes;
-                console.log("all teams");
+                console.log("all teams " + teams);
                 return {
                     success: true,
                     data: teams
