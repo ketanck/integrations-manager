@@ -45,7 +45,10 @@ export declare class IntegrationManager {
      * @param code axpects auth code, you get from url
      * @returns clickup response - access_token
      */
-    getClickUpAccessToken(code: string): Promise<any>;
+    getClickUpAccessToken({ code, redirectUrl }: {
+        code: string;
+        redirectUrl: string;
+    }): Promise<any>;
     /**
      * Signin user and get access token
      * @param code expects auth code, you get from url

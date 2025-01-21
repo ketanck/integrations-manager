@@ -75,10 +75,10 @@ class IntegrationManager {
      * @param code axpects auth code, you get from url
      * @returns clickup response - access_token
      */
-    getClickUpAccessToken(code) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
-            return (_b = yield ((_a = this.clickup) === null || _a === void 0 ? void 0 : _a.getTokens(code))) !== null && _b !== void 0 ? _b : "";
+    getClickUpAccessToken(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ code, redirectUrl }) {
+            var _b;
+            return yield ((_b = this.clickup) === null || _b === void 0 ? void 0 : _b.getTokens({ code, redirectUrl }));
         });
     }
     /**

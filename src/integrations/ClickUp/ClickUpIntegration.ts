@@ -43,7 +43,7 @@ export class ClickUpIntegration implements ClickUpInterface {
      * @param code authorization code returned by ClickUp when user grants access
      * @returns access token
      */
-    async getTokens(code: any): Promise<any> {
+    async getTokens({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any> {
         const data = {
             client_id: this.clientId,
             client_secret: this.clientSecret,

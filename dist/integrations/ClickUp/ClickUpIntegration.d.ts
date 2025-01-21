@@ -22,7 +22,10 @@ export declare class ClickUpIntegration implements ClickUpInterface {
      * @param code authorization code returned by ClickUp when user grants access
      * @returns access token
      */
-    getTokens(code: any): Promise<any>;
+    getTokens({ code, redirectUrl }: {
+        code: string;
+        redirectUrl: string;
+    }): Promise<any>;
     /**
      * Fetches User information from ClickUp
      * @param accessToken needs access token provided by ClickUp

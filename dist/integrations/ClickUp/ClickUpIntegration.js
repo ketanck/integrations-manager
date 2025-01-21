@@ -41,8 +41,8 @@ class ClickUpIntegration {
      * @param code authorization code returned by ClickUp when user grants access
      * @returns access token
      */
-    getTokens(code) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getTokens(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ code, redirectUrl }) {
             const data = {
                 client_id: this.clientId,
                 client_secret: this.clientSecret,

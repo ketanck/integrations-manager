@@ -70,8 +70,8 @@ export class IntegrationManager {
      * @param code axpects auth code, you get from url
      * @returns clickup response - access_token
      */
-    async getClickUpAccessToken(code: string): Promise<any> {
-        return await this.clickup?.getTokens(code) ?? "";
+    async getClickUpAccessToken({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any> {
+        return await this.clickup?.getTokens({ code, redirectUrl });
     }
 
     /**
