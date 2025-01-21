@@ -48,10 +48,10 @@ export class LinearIntegration implements LinearInterface {
      * @param code authorization code returned by Linear when user grants access
      * @returns access token and releavant information
      */
-    async getTokens(code: string): Promise<any> {
+    async getTokens({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any> {
         const data = {
             code: code,
-            redirect_uri: this.redirectUrl,
+            redirect_uri: redirectUrl,
             client_id: this.clientId,
             client_secret: this.clientSecret,
             grant_type: "authorization_code"

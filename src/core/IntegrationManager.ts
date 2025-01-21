@@ -61,8 +61,8 @@ export class IntegrationManager {
      * @returns access_token, token_type, expires_in, scope 
      * @returns linear response - access_token, token_type, expires_in, scope 
      */
-    async getLinearAccessToken(code: string): Promise<any> {
-        return await this.linear?.getTokens(code);
+    async getLinearAccessToken({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any> {
+        return await this.linear?.getTokens({ code, redirectUrl});
     }
 
     /**

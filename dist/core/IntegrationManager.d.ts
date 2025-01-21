@@ -36,7 +36,10 @@ export declare class IntegrationManager {
      * @returns access_token, token_type, expires_in, scope
      * @returns linear response - access_token, token_type, expires_in, scope
      */
-    getLinearAccessToken(code: string): Promise<any>;
+    getLinearAccessToken({ code, redirectUrl }: {
+        code: string;
+        redirectUrl: string;
+    }): Promise<any>;
     /**
      * Signin user and get access token
      * @param code axpects auth code, you get from url

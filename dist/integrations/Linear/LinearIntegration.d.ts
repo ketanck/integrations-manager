@@ -23,7 +23,10 @@ export declare class LinearIntegration implements LinearInterface {
      * @param code authorization code returned by Linear when user grants access
      * @returns access token and releavant information
      */
-    getTokens(code: string): Promise<any>;
+    getTokens({ code, redirectUrl }: {
+        code: string;
+        redirectUrl: string;
+    }): Promise<any>;
     /**
      * Revokes Linear access token
      * @param accessToken needs access token provided by Linear

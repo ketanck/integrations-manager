@@ -45,11 +45,11 @@ class LinearIntegration {
      * @param code authorization code returned by Linear when user grants access
      * @returns access token and releavant information
      */
-    getTokens(code) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getTokens(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ code, redirectUrl }) {
             const data = {
                 code: code,
-                redirect_uri: this.redirectUrl,
+                redirect_uri: redirectUrl,
                 client_id: this.clientId,
                 client_secret: this.clientSecret,
                 grant_type: "authorization_code"

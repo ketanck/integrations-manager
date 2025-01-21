@@ -7,6 +7,8 @@ import { IntegrationInterface } from "../../../core/IntegrationInterface";
 export interface LinearInterface extends IntegrationInterface {
     authorize(scopes: string): string;
 
+    getTokens({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any>;
+
     fetchUserInfo(accessToken: string): Promise<User>;
 
     createTask({ accessToken, title, description }: { accessToken: string, title: string, description: string }): Promise<any>;

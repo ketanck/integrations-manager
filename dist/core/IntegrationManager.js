@@ -64,10 +64,10 @@ class IntegrationManager {
      * @returns access_token, token_type, expires_in, scope
      * @returns linear response - access_token, token_type, expires_in, scope
      */
-    getLinearAccessToken(code) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            return yield ((_a = this.linear) === null || _a === void 0 ? void 0 : _a.getTokens(code));
+    getLinearAccessToken(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ code, redirectUrl }) {
+            var _b;
+            return yield ((_b = this.linear) === null || _b === void 0 ? void 0 : _b.getTokens({ code, redirectUrl }));
         });
     }
     /**

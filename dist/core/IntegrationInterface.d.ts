@@ -13,7 +13,7 @@ export interface IntegrationInterface {
      * Method which takes authorization code and exchanges it in return of access token and other related data
      * @param code
      */
-    getTokens(code?: any): Promise<any>;
+    getTokens({}: any): Promise<any>;
     /**
      * Return user information of the user from the platform
      * @param token takes accessToken as input
