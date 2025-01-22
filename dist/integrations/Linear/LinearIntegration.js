@@ -199,5 +199,5 @@ class LinearIntegration {
 exports.LinearIntegration = LinearIntegration;
 LinearIntegration.authUrl = "https://linear.app/oauth/authorize";
 LinearIntegration.tokenUrl = "https://api.linear.app/oauth/token";
-LinearIntegration.tokenRevokeUrl = "https://api.linear.app/oauth/token";
+LinearIntegration.tokenRevokeUrl = "https://api.linear.app/oauth/revoke";
 LinearIntegration.endpoint = "https://api.linear.app/graphql";

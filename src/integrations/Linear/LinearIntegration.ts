@@ -13,7 +13,7 @@ export class LinearIntegration implements LinearInterface {
 
     private static readonly authUrl: string = "https://linear.app/oauth/authorize";
     private static readonly tokenUrl: string = "https://api.linear.app/oauth/token";
-    private static readonly tokenRevokeUrl: string = "https://api.linear.app/oauth/token";
+    private static readonly tokenRevokeUrl: string = "https://api.linear.app/oauth/revoke";
     private static readonly endpoint: string = "https://api.linear.app/graphql";
 
     constructor({clientId, clientSecret, redirectUrl}: {clientId: string, clientSecret: string, redirectUrl: string}) {
