@@ -170,6 +170,7 @@ class LinearIntegration {
                         id
                         title
                         description
+                        url
                       }
                     }
                   }

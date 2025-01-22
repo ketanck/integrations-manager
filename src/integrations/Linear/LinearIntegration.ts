@@ -188,6 +188,7 @@ export class LinearIntegration implements LinearInterface {
                         id
                         title
                         description
+                        url
                       }
                     }
                   }
