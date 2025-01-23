@@ -24,7 +24,10 @@ export declare class JiraIntegration implements JiraInterface {
      * @param code authorization code returned by Jira
      * @returns access_token, expires_in, token_type and scope (and refresh_token)
      */
-    getTokens(code: string): Promise<any>;
+    getTokens({ code, redirectUrl }: {
+        code: string;
+        redirectUrl: string;
+    }): Promise<any>;
     /**
      * Revoke Jira access token
      * @param accessToken Jira access token

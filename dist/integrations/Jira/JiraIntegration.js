@@ -47,11 +47,11 @@ class JiraIntegration {
      * @param code authorization code returned by Jira
      * @returns access_token, expires_in, token_type and scope (and refresh_token)
      */
-    getTokens(code) {
-        return __awaiter(this, void 0, void 0, function* () {
+    getTokens(_b) {
+        return __awaiter(this, arguments, void 0, function* ({ code, redirectUrl }) {
             const data = {
                 code: code,
-                redirect_uri: this.redirectUrl,
+                redirect_uri: redirectUrl,
                 client_id: this.clientId,
                 client_secret: this.clientSecret,
                 grant_type: "authorization_code"

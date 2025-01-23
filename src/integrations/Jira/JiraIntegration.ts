@@ -50,10 +50,10 @@ export class JiraIntegration implements JiraInterface {
      * @param code authorization code returned by Jira
      * @returns access_token, expires_in, token_type and scope (and refresh_token)
      */
-    async getTokens(code: string): Promise<any> {
+    async getTokens({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any> {
         const data = {
             code: code,
-            redirect_uri: this.redirectUrl,
+            redirect_uri: redirectUrl,
             client_id: this.clientId,
             client_secret: this.clientSecret,
             grant_type: "authorization_code"

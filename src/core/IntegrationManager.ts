@@ -79,8 +79,8 @@ export class IntegrationManager {
      * @param code expects auth code, you get from url
      * @returns jira response - access_token, expires_in and scope
      */
-    async getJiraAccessToken(code: string): Promise<any> {
-        return await this.jira?.getTokens(code);
+    async getJiraAccessToken({code, redirectUrl} : {code: string, redirectUrl: string}): Promise<any> {
+        return await this.jira?.getTokens({ code, redirectUrl });
     }
 
 

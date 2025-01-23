@@ -86,10 +86,10 @@ class IntegrationManager {
      * @param code expects auth code, you get from url
      * @returns jira response - access_token, expires_in and scope
      */
-    getJiraAccessToken(code) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            return yield ((_a = this.jira) === null || _a === void 0 ? void 0 : _a.getTokens(code));
+    getJiraAccessToken(_a) {
+        return __awaiter(this, arguments, void 0, function* ({ code, redirectUrl }) {
+            var _b;
+            return yield ((_b = this.jira) === null || _b === void 0 ? void 0 : _b.getTokens({ code, redirectUrl }));
         });
     }
     // ###################   FETCH USER INFO   ###################

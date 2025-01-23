@@ -54,7 +54,10 @@ export declare class IntegrationManager {
      * @param code expects auth code, you get from url
      * @returns jira response - access_token, expires_in and scope
      */
-    getJiraAccessToken(code: string): Promise<any>;
+    getJiraAccessToken({ code, redirectUrl }: {
+        code: string;
+        redirectUrl: string;
+    }): Promise<any>;
     /**
      * Fetch user info from Linear
      * @param accessToken expects accessToken as argument
