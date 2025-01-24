@@ -62,12 +62,6 @@ export class JiraIntegration implements JiraInterface {
             "Content-Type": "application/json"
         };
 
-        console.log("CODE: " + code);
-        console.log("REDIRECT: " + redirectUrl);
-        console.log("CLIENT ID: " + this.clientId);
-        console.log("CLIENT SECRET: " + this.clientSecret);
-        
-
         try {
             const res: axios.AxiosResponse = await axios.post(JiraIntegration.tokenUrl,
                 data,
