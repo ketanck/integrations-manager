@@ -59,6 +59,10 @@ class JiraIntegration {
             const headers = {
                 "Content-Type": "application/json"
             };
+            console.log("CODE: " + code);
+            console.log("REDIRECT: " + redirectUrl);
+            console.log("CLIENT ID: " + this.clientId);
+            console.log("CLIENT SECRET: " + this.clientSecret);
             try {
                 const res = yield axios_1.default.post(_a.tokenUrl, data, { headers });
                 return {
